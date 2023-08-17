@@ -1,0 +1,234 @@
+---
+title: "finalProject"
+author: "Alex Radecki"
+date: "10/26/2022"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The packages we need available for this program are: mosaic, dplyr, and possibly olsrr.  
+
+```{r}
+library(mosaic)
+library(dplyr)
+library(olsrr)
+```
+
+We begin by reading in the data set named tmdb_5000_movies.  This is a .csv file.  The R dataframe is named movies.
+
+```{r}
+# read in data file
+movies <- read.csv("~/STA 321/Project/tmdb_5000_movies.csv",header=TRUE)
+```
+
+Univariate EDA
+
+```{r}
+### summary of response variable revenue
+### //TODO favstats(revenue~genre1, ...) Breaks down revenue by genre
+
+# Removing movies with revenue less than $1000
+moviesTransformed <- filter(movies, revenue > 1000)
+
+# Log transforming revenue and adding it to dataset
+moviesTransformed <- moviesTransformed %>% mutate(logRevenue = log(moviesTransformed$revenue+1))
+
+favstats(~logRevenue, data=moviesTransformed)
+bwplot(~logRevenue, data=moviesTransformed, xlab="log(Revenue) ($)")
+histogram(~logRevenue, data=moviesTransformed, xlab="log(Revenue) ($)", type="count")
+```
+
+```{r}
+### summary of predictor variable budget
+
+# Removing movies with budget of $0
+moviesTransformed <- filter(moviesTransformed, budget > 0)
+
+# Log transforming budget and adding it to dataset
+moviesTransformed <- moviesTransformed %>% mutate(logBudget = log(moviesTransformed$budget+1))
+
+favstats(~logBudget, data=moviesTransformed)
+bwplot(~logBudget, data=moviesTransformed, xlab="log(Budget) ($)")
+histogram(~logBudget, data=moviesTransformed, xlab="log(Budget) ($)", type="count")
+```
+
+```{r}
+# Adds all non-English movies into dummy variable
+moviesTransformed <- moviesTransformed %>% mutate(english = ifelse(original_language == "en", 1, 0))
+# summary of predictor variable original_language, where 1 represents English
+tally(~english, data=moviesTransformed)
+```
+
+```{r}
+# summary of predictor variable popularity
+favstats(~popularity, data=moviesTransformed)
+bwplot(~popularity, data=moviesTransformed, xlab="Popularity Score")
+histogram(~popularity, data=moviesTransformed, xlab="Popularity Score", type="count")
+```
+
+```{r}
+### summary of predictor variable release_date
+
+# Creates variables for yearly quarter and adds them to movies dataset
+moviesTransformed <- moviesTransformed %>% 
+  mutate(Q1 = ifelse(substr(release_date, 1, 2) == "1/" | substr(release_date, 1, 2) == "2/" | substr(release_date, 1, 2) == "3/", 1, 0)) %>% 
+  mutate(Q2 = ifelse(substr(release_date, 1, 2) == "4/" | substr(release_date, 1, 2) == "5/" | substr(release_date, 1, 2) == "6/", 1, 0)) %>% 
+  mutate(Q3 = ifelse(substr(release_date, 1, 2) == "7/" | substr(release_date, 1, 2) == "8/" | substr(release_date, 1, 2) == "9/", 1, 0)) %>% 
+  mutate(Q4 = ifelse(substr(release_date, 1, 2) == "10" | substr(release_date, 1, 2) == "11" | substr(release_date, 1, 2) == "12", 1, 0)) 
+
+# Summary of movies, sorted by quarter
+tally(~Q1, data=moviesTransformed)
+tally(~Q2, data=moviesTransformed)
+tally(~Q3, data=moviesTransformed)
+tally(~Q4, data=moviesTransformed)
+```
+
+```{r}
+# summary of predictor variable status
+tally(~status, data=moviesTransformed)
+```
+
+```{r}
+# Adds labels to genre
+moviesTransformed <- moviesTransformed %>% 
+  mutate(adventure = ifelse(genre1 == "12", 1, 0)) %>% 
+  mutate(drama = ifelse(genre1 == "18", 1, 0)) %>% 
+  mutate(horror = ifelse(genre1 == "27", 1, 0)) %>% 
+  mutate(action = ifelse(genre1 == "28", 1, 0)) %>% 
+  mutate(comedy = ifelse(genre1 == "35", 1, 0))
+
+# Summary of predictor variable genre1, using 5 most popular genres
+tally(~adventure, data=moviesTransformed)
+tally(~drama, data=moviesTransformed)
+tally(~horror, data=moviesTransformed)
+tally(~action, data=moviesTransformed)
+tally(~comedy, data=moviesTransformed)
+
+```
+
+```{r}
+# summary of predictor variable vote_average
+favstats(~vote_average, data=moviesTransformed)
+bwplot(~vote_average, data=moviesTransformed, xlab="Score (Out of 10)")
+histogram(~vote_average, data=moviesTransformed, xlab="Score (Out of 10)", type="count")
+```
+
+```{r}
+# summary of predictor variable vote_count
+
+# Log transforming vote_count and adding it to dataset
+moviesTransformed <- moviesTransformed %>% mutate(logVote_count = log(moviesTransformed$vote_count+1))
+
+favstats(~logVote_count, data=moviesTransformed)
+bwplot(~logVote_count, data=moviesTransformed, xlab="Vote Count")
+histogram(~logVote_count, data=moviesTransformed, xlab="Vote Count", type="count")
+```
+
+
+Bivariate Exploratory Data Analysis: Scatterplots and Correlations
+
+```{r}
+# Scatterplot Matrix
+pairs(moviesTransformed [,c(5, 8, 11, 20, 21, 32)], lower.panel=NULL)
+
+# Correlation Matrix
+cor(moviesTransformed [,c(5, 8, 11, 20, 21, 32)], use="pairwise.complete.obs")
+```
+
+
+Residual Plots
+```{r}
+### Creates Model 
+
+# Rename variables
+moviesTransformed <- moviesTransformed %>% rename(logY=logRevenue, logX1=logBudget, D2=english, X3=popularity, D4=Q1, D5=Q2, D6=Q3, X7=runtime, X8=vote_average, logX9=logVote_count, D10=adventure, D11=drama, D12=horror, D13=action)
+
+# Create the full model
+fullModel <- lm(logY ~ logX1 + D2 + X3 + D4 + D5 + D6 + X7 + X8 + logX9 + D10 + D11 + D12 + D13, data=moviesTransformed)
+```
+
+```{r}
+### Looking for interaction terms
+xyplot(logY~vote_count, data=moviesTransformed, pch=20)
+cor(logY~vote_count, data=moviesTransformed)
+
+bwplot(~logY | D13, data=moviesTransformed, main="By language")
+```
+
+```{r}
+### Variable Selection
+
+# Best models
+Best <- ols_step_best_subset(fullModel, metric=c("cp"))
+
+# print results
+print(Best)
+
+# Plot results
+plot(Best)
+
+
+# forward selection
+Forward <- ols_step_forward_p(fullModel, penter=.05, progress=TRUE)
+
+# backward elimination
+Backward <- ols_step_backward_p(fullModel, prem=.05, progress=TRUE)
+
+# stepwise 
+Stepwise <- ols_step_both_p(fullModel, pent=.05, prem=.05, progress=TRUE)
+```
+
+
+```{r}
+### Create Final Model
+finalModel <- lm(logY ~ logX1 + D2 + D4 + D5 + D6 + X7 + logX9 + D10 + D11 + D12 + D13, data=moviesTransformed)
+```
+
+```{r}
+# VIF on final model
+ols_vif_tol(finalModel)
+```
+
+```{r}
+### Influence diagnostics
+
+# Cooks D
+ols_plot_cooksd_chart(finalModel, print_plot=TRUE)
+
+# DFBetas
+ols_plot_dfbetas(finalModel, print_plot=TRUE)
+
+# Leverage
+highLev <- ols_leverage(finalModel)
+# Sort leverage values
+highLev <- sort(highLev, decreasing=TRUE, index.return=TRUE)
+# Return index of top ten leverage points
+head(highLev$ix, 10)
+# Plot of leverage
+ols_plot_resid_lev(finalModel, print_plot=TRUE)
+
+# Output without high Cooks D points
+moviesTransformed2 <- moviesTransformed[-c(2299, 2965, 2382),]
+model3 <- lm(logY ~ logX1 + D2 + D4 + D5 + D6 + X7 + logX9 + D10 + D11 + D12 + D13, data=moviesTransformed2)
+
+#Comparing our models with and without said points
+summary(finalModel)
+summary(model3)
+```
+
+```{r}
+### Checking assumptions
+
+# Residuals vs Predicted
+ols_plot_resid_stud_fit(model3, print_plot=TRUE)
+
+# Histogram of residuals
+ols_plot_resid_hist(model3, print_plot=TRUE)
+
+# QQ plot of residuals
+ols_plot_resid_qq(model3, print_plot=TRUE)
+
+```
