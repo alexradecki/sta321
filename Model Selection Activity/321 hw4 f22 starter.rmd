@@ -1,0 +1,387 @@
+---
+title: "321 HW 4 starter.rmd"
+author: "Alex Radecki"
+date: "October 9, 2022"
+output: word_document
+---
+
+The code chunk below allows files to be knitted even if there are programming errors.
+
+```{r set_options, message=FALSE}
+knitr::opts_chunk$set(error = TRUE, fig.width = 6, fig.asp = 0.618)
+```
+
+The packages we need available for this program are: mosaic, dplyr, broom, and olsrr.  
+
+```{r packages, message=FALSE}
+library(mosaic)
+library(dplyr)
+library(broom)
+library(olsrr)
+```
+
+We begin by reading in the data set named used cars.  This is a .csv file.  The R dataframe is named UsedCars.
+
+```{r, data}
+# read in data file
+UsedCars <- read.csv("used cars.csv",header=TRUE)
+```
+
+IN HOMEWORK 4 WE ARE GOING TO BUILD A MODEL TO PREDICT THE PRICE OF A USED CAR. 
+
+1. Write the code to find numerical summaries of the response variable Price and the quantitative predictor variable Mileage.  See LM 1  - Basic Numerical Summaries on the STA 321 R how-to sheet.  
+
+```{r}
+# numerical summary of response variable Price
+favstats(~Price, data=UsedCars, na.rm=TRUE)
+
+#numerical summary of predictor variable Mileage
+favstats(~Mileage, data=UsedCars, na.rm=TRUE)
+```
+
+(a) What is the third quartile for price?
+
+Answer: 26717.32
+
+(b) Write a sentence that interprets the third quartile for price.
+
+Answer: 75% of used car prices are at or below 26717.32
+
+(c) What percentage of the cars have mileage greater than 25,213?
+
+Answer: 25%
+
+
+2. The predictor variables Cylinder, Liter, and Doors are quantitative but take on relatively few different values.  Make a frequency table of each variable.  See LM 4  - Frequency Table on the STA 321 R how-to sheet.  
+
+```{r}
+# frequency tables
+
+#Cylinder
+tally(~Cylinder, data=UsedCars)
+
+#Liter
+tally(~Liter, data=UsedCars)
+
+#Doors
+tally(~Doors, data=UsedCars)
+```
+
+(a) How many (number not %) of the cars are 8 cylinder cars?
+
+Answer: 100
+
+(b) The variable Liter has many possible values.  What are the three most common values?
+
+Answer: 2.2L, 3.8L, 3.5L
+
+(c) True/False: There are more 2-door cars in the dataset than 4-door cars.
+
+Answer: False
+
+
+3. The predictor variables Model, Type, Cruise, Sound, and Leather are categorical, variables.  Make a frequency table of each variable.  See LM 4  - Frequency Table on the STA 321 R how-to sheet.  
+
+```{r}
+# frequency tables
+
+#Model
+tally(~Model, data=UsedCars)
+
+#Type
+tally(~Type, data=UsedCars)
+
+#Cruise
+tally(~Cruise, data=UsedCars)
+
+#Sound
+tally(~Sound, data=UsedCars)
+
+#Leather
+tally(~Leather, data=UsedCars)
+```
+
+(a) How many different models of cars are there in the data set?
+
+Answer: 32
+
+(b) How many cars (number not %) have cruise?
+
+Answer: 605
+
+(c) How many cars (number not %) have upgraded speakers?
+
+Answer: 546
+
+(d) How many cars (number not %) have upgraded leather seats?
+
+Answer: 582
+
+(e) We are going to create dummy variables for Type.  Explain why we need 4 dummy variables and not 5.
+
+Answer: If it is none of the 4 dummy variables, then it must be the 5th type making another dummy variable unnecessary
+
+(f) Explain why we do not need to create a dummy variable for Cruise, or Sound, or Leather?
+
+Answer: They already have a binary response
+
+
+4. The code below creates the dummy variables for Type.  
+
+```{r}
+# code for dummy variables for Type
+UsedCars <- UsedCars %>% mutate(Type.Convertible = ifelse(Type == "Convertible", 1, 0),
+                      Type.Coupe = ifelse(Type == "Coupe", 1, 0),
+                      Type.Hatchback = ifelse(Type == "Hatchback", 1, 0),
+                      Type.Sedan = ifelse(Type == "Sedan", 1, 0))
+```
+
+(a) What are the values of the four dummy variables for a Coupe?
+
+Answer: Type.Convertible == 0, Type.Coupe == 1, Type,Hatchback == 0, Type.Sedan == 0
+
+(b) What are the values of the four dummy variables for a Wagon?
+
+Answer: Type.Convertible == 0, Type.Coupe == 0, Type,Hatchback == 0, Type.Sedan == 0
+
+
+5.	Write the code to create an interaction variable named MileLiter between Mileage and Liter. Write the code so that the variable is added to the dataframe UsedCars. See Utiltites  - Create a New Variable on the STA 321 R how-to sheet. 
+
+```{r}
+# interaction variable
+UsedCars <- UsedCars %>% mutate(MileLiter = Mileage*Liter)
+```
+
+*******************************************************************
+At this point your dataframe UsedCars should have 804 observations and 19 variables.
+*******************************************************************
+
+*******************************************************************
+Note: The variable Price is very skewed right so we probably want to take its log and use that as the response.  WE ARE NOT GOING TO DO THAT TO KEEP THINGS SIMPLE.
+*******************************************************************
+
+6. Write the code to fit the full model to predict Price that includes potential predictor variables Mileage, Type.Convertible, Type.Coupe, Type.Hatchback, Type.Sedan, Cylinder, Liter, Cruise, Sound, Leather, and MileLiter.  Save the results to an R object named FM.  See LM 2  - Fitting the MLR Model on the STA 321 R how-to sheet.  
+
+```{r,}
+# Full Model
+FM <- lm(Price ~ Mileage + Type.Convertible + Type.Coupe + Type.Hatchback + Type.Sedan + Cylinder + Liter + Cruise + Sound + Leather + MileLiter, data=UsedCars)
+```
+
+(a) Write out the full model.  Use the following shorthand: Y = Price, X1 = Mileage, D2 = Type.Convertible, D3 = Type.Coupe, D4 = Type.Hatchback, D5 = Type.Sedan, X6 = Cylinder, X7 = Liter, X8 = Cruise, X9 = Sound, X10 = Leather, and X11 = MileLiter.
+
+Answer: Y = B0 + B1X1 + B2D2 + B3D3 + B4D4 + B5D5 + B6X6 + B7X7 + B8X8 + B9X9 + B10X10 + B11X11 + e
+
+
+7. The code below finds correlations among the response Price and the quantitative predictors Mileage and Liter.  Use the output to answer the questions.
+
+```{r}
+# Predictor Correlations
+cor(UsedCars [,c(2,3,10)], use = "pairwise.complete.obs")
+```
+
+(a) Which quantitative predictor has the strongest correlation with Price?  And, what is the value of the correlation?
+
+Answer: Liter: 0.5581458
+
+(b) What is correlation between the predictors Mileage and Liter?
+
+Answer: -0.01864062
+
+(c) Explain why the sign of the correlation in part (a) makes sense.  You may need to ask a car person about this!
+
+Answer: More liters = more power baby! Generally, you're gonna find more power in sports cars (expensive) and trucks/SUVs (expensive)
+
+(d) Do Mileage and Liter violate the assumption of predictor independence?  
+
+Answer: No, there is almost no correlation between the 2 predictors
+
+
+8. Find the best 1-variable, 2-variable, etc. regression models using the best subsets with the Mallows Cp metric and save the results to an R object named Best. (Note: It will take a few minutes to run the code.)  Next, type Best to print out the results.  Finally, write the code to plot the results of Best. See LM 4 - Best Subsets Regression on the STA 321 R how-to sheet. 
+
+```{r,}
+# Best models
+Best <- ols_step_best_subset(FM, metric=c("cp"))
+
+# print results
+print(Best)
+
+# Plot results
+plot(Best)
+```
+
+(a) What predictors make up the best 3-variable model?  Also, what is the Mallows Cp value and the R^2 value for this model?
+
+Answer: Type.Convertible, Cylinder, Cruise. Mallows Cp: 277.3263 R^2: 0.5819     
+
+(b) True/False: Mallows Cp suggests that the model is sufficient for predicting Price.
+
+Answer: False
+
+(c) Consider the Akaike's Information Criteria (AIC) plot.  How many variables does the plot suggest to use?  Explain your answer in a sentence.
+
+Answer: 9 variables, as the AIC for the 10 variable model is not <= AIC for 9 variable model - 2
+
+(d) Write out the best seven-variable regression model. Use the notation introduced in Question 6(a).
+
+Answer: Y = B0 + B2D2 + B3D3 + B4D4 + B5D5 + B6X6 + B8X8 + B11X11 + e
+
+
+9.	Use the Forward Selection procedure with penter = .001 and save the results to an R object named Forward. See LM 4 - Forward Selection on the STA 321 R how-to sheet.  
+
+```{r}
+# forward selection
+Forward <- ols_step_forward_p(FM, penter=.001, progress=TRUE)
+```
+
+(a) In the code you used penter = .001.  Explain what this means.
+
+Answer: We will test the predictor with the strongest partial correlation to Y and add it to the model if it has a p-value of less than 0.001 
+
+(b) Which variable was added first to the model?  Why was it added first?
+
+Answer: Cylinder as it has the strongest correlation to Y (Price)
+
+(c) Write out the final model from Forward Selection.  Use the notation introduced in Question 6(a).
+
+Answer: Y = B0 + B2D2 + B3X3 + B4X4 + B5X5 + B6X6 + B8X8 + B10X10+ B11X11 + e
+
+
+10.	Use the Backward Elimination procedure with prem = .001 and save the results to an R object named Backward. See LM 4 - Backward Elimination on the STA 321 R how-to sheet.  
+
+```{r}
+# backward elimination
+Backward <- ols_step_backward_p(FM, prem=.001, progress=TRUE)
+```
+
+(a) In the code you used prem = .001.  Explain what this means.
+
+Answer: We are testing the p-values against 0.001 and removing predictors (starting with the one with the highest p-value) and continuing until all remaining predictors are significant
+
+(b) Which variable was dropped first from the model?  Why was it dropped first?
+
+Answer: Mileage as it had the higheset p-value
+
+(c) Write out the final model from Backward Elimination.  Use the notation introduced in Question 4(a).
+
+Answer: Y = B0 + B2D2 + B3X3 + B4X4 + B5X5 + B6X6 + B8X8 + B10X10+ B11X11 + e
+
+
+11.	Use the Stepwise procedure with pent = .001 and prem = .001 and save the results to an R object named Stepwise. See LM 4 - Backward Elimination on the STA 321 R how-to sheet.  
+
+```{r}
+# stepwise 
+Stepwise <- ols_step_both_p(FM, pent=.001, prem=.001, progress=TRUE)
+```
+
+(a) In the code you used pent = .001.  Explain what this means.
+
+Answer: We will test the predictor with the strongest partial correlation to Y and add it to the model if it has a p-value of less than 0.001 
+
+(b) In the code you used prem = .001.  Explain what this means.
+
+Answer: We are testing the p-values against 0.001 and removing the predictor with the highest p-value if it is greater than 0.001 
+
+(c) Were any variables added to the model and subsequently removed in a later step?  If so, which variables?
+
+Answer: No
+
+(d) Write out the final model from Backward Elimination.  Use the notation introduced in Question 4(a).
+
+Answer: Y = B0 + B2D2 + B3X3 + B4X4 + B5X5 + B6X6 + B8X8 + B10X10+ B11X11 + e
+
+
+12.	Consider the model Y = B0 + B2D2 + B3D3 + B4D4 + B5D5 + B6X6 + B8X8 + B10X10 + B11X11 + E.
+
+(a) Does this model adhere to the principle that if you include one dummy variable for a categorical predictor then you include them all?
+
+Answer: Yes
+
+(b) Does this model adhere to the principle that if you include an interaction  then you include the predictors that comprise that interaction?
+
+Answer: No, we have the interaction term for Mileage*Liter, but the terms Mileage and Liter are not included in the model
+
+
+************************************************
+We are going to drop the predictor MileLiter and for the remainder of this homework assignment use the following final model: Y = B0 + B2D2 + B3D3 + B4D4 + B5D5 + B6X6 + B8X8 + B10X10 + E
+*********************************************** 
+
+13.	Fit the final model and save to an R object named FinalModel. See LM 2 - Fitting the MLR Model on the STA 321 R how-to sheet.   
+
+```{r}
+# Final Model
+FinalModel <- lm(Price ~ Type.Convertible + Type.Coupe + Type.Hatchback + Type.Sedan + Cylinder + Cruise + Leather, data=UsedCars)
+```
+
+
+14.	Write the code to get the variance inflation factors for the final model. See LM 4 - Variance Inflation Factors on the STA 321 R how-to sheet.  
+
+```{r,}
+# VIF
+ols_vif_tol(FinalModel)
+```
+
+(a) Based on the VIF is it okay to include all seven of these predictors in the final model?  Explain your answer in a sentence.
+
+Answer: Yes, all predictors have a VIF less than 10
+
+
+15.	Write the code to get a chart of the Cooks D for the final model. See LM 3 - Cooks D Chart on the STA 321 R how-to sheet. 
+
+```{r, Q10}
+# Cooks D
+ols_plot_cooksd_chart(FinalModel, print_plot=TRUE)
+```
+
+(a) You should get five observations with Cooks D value > 0.2.  The observation numbers are 151, 152, 153, 154,  and 155.  What do these observations have in common?
+
+Answer: Aside from being subsequent observations, they (Cadillac XLR-V8s) have the same values for all predictors except for Price, Mileage, and Make
+
+
+16. Write the code to get DFBetas charts for the final model. See LM 3 - DFBetas on the STA 321 R how-to sheet. 
+
+```{r}
+# DFBetas
+ols_plot_dfbetas(FinalModel, print_plot=TRUE)
+```
+
+(a) Let's focus on the five observations 151, 152, 153, 154, and 155. Which predictor variables do they have a large impact on?  
+
+Answer: Type.Convertible and Cylinder
+
+
+17.	Write the code to make Studentized Residuals vs. Predicted plot. See LM 3 - Externally Studentized Residuals - Y-Hat Plot on the STA 321 R how-to sheet.   
+
+```{r}
+# Residual v. Predicted
+ols_plot_resid_stud_fit(FinalModel, print_plot=TRUE)
+```
+
+(a) True/False: The assumption of linearity is met. Explain answer if False.
+
+Answer: False, I would argue that it is slightly curvilinear, starting above 0 at around <10000, then curving back up slightly around 20000
+
+(b) True/False: The assumption that the errors have mean 0 is met. Explain answer if False.
+
+Answer: True, I would say that the plot appears to have mean zero, if not very close to it
+
+(c) True/False: The assumption of constant variance is met. Explain answer if False.
+
+Answer: False, the residuals begin to fan out around 15000, then funneling in and out multiple times
+
+(d) True/False: There are observations with Externally Studentized Residual < -5 or > 5? 
+
+Answer: False
+ 
+
+18.	Write the code to make a normal probability plot of the studentized residuals. See LM 3 - Normal Probability Plot of Residuals on the STA 321 R how-to sheet.    
+
+```{r,}
+# normal probability plot of Residuals
+ols_plot_resid_qq(FinalModel, print_plot=TRUE)
+```
+
+(a) True/False: The assumption that the errors have a normal distribution is met. Explain answer if False.
+
+Answer: False, the points clearly do not closely follow the line
+
+
