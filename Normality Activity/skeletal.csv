@@ -1,0 +1,43 @@
+ID,Site,Deposition,Depth,Lime,Age,Nitrogen,Oil
+1,1,88.5,7,Lime Added,,3.88,Contaminated
+2,1,88.5,,Lime Added,,4,Contaminated
+3,2,26.5,7,No Lime Added,34,4.06,Not Contaminated
+4,1,85.2,7,Lime Added,,3.69,Contaminated
+5,1,71.8,7.6,Lime Added,65,3.88,Not Contaminated
+6,1,70.6,7.5,Lime Added,42,3.53,Not Contaminated
+7,1,68,7,Lime Added,28,3.93,Not Contaminated
+8,1,71.6,8,Lime Added,35,3.88,Not Contaminated
+9,1,70.2,6,Lime Added,44,3.64,Not Contaminated
+10,1,55.5,6,No Lime Added,29,3.97,Not Contaminated
+11,1,36.5,6.5,No Lime Added,,3.85,Not Contaminated
+12,1,36.3,6.5,No Lime Added,48,3.96,Not Contaminated
+13,1,46.5,6.5,No Lime Added,35,3.69,Not Contaminated
+14,1,35.9,6.5,No Lime Added,,3.76,Not Contaminated
+15,1,45.5,6.5,No Lime Added,34,3.75,Not Contaminated
+16,1,43,6.5,No Lime Added,38,3.75,Not Contaminated
+17,1,44.9,6.5,No Lime Added,27,3.92,Not Contaminated
+18,1,59.5,8,No Lime Added,26,3.76,Not Contaminated
+19,1,58.3,8,No Lime Added,23,3.93,Not Contaminated
+20,1,56.5,8,No Lime Added,35,3.7,Not Contaminated
+21,1,56.3,8,No Lime Added,23,3.82,Not Contaminated
+22,1,43,6.5,No Lime Added,40,3.78,Not Contaminated
+23,1,42.5,9,No Lime Added,31,4,Not Contaminated
+24,1,29,7.5,No Lime Added,31,3.92,Not Contaminated
+25,1,35.3,8.5,No Lime Added,39,3.79,Not Contaminated
+26,2,93.6,4,Lime Added,39,3.49,Not Contaminated
+27,2,90,4,Lime Added,43,3.57,Not Contaminated
+28,2,88,5.5,Lime Added,26,3.43,Not Contaminated
+29,2,84.4,5,Lime Added,,3.55,Not Contaminated
+30,2,84,4.75,Lime Added,,3.5,Not Contaminated
+31,2,79.7,4.75,Lime Added,47,3.27,Not Contaminated
+32,2,67.4,4.5,Lime Added,39,3.66,Not Contaminated
+33,2,64.7,5,Lime Added,27,3.9,Not Contaminated
+34,2,64.7,5.5,Lime Added,35,3.91,Not Contaminated
+35,2,38.3,7,No Lime Added,21,3.73,Not Contaminated
+36,2,59.6,9.25,No Lime Added,46,3.72,Not Contaminated
+37,2,32,9,No Lime Added,24,3.85,Not Contaminated
+38,2,32.2,9,No Lime Added,27,3.85,Not Contaminated
+39,2,34.7,8.5,No Lime Added,30,4.04,Not Contaminated
+40,2,27.6,6,No Lime Added,22,4,Not Contaminated
+41,2,35.7,9,No Lime Added,19,3.93,Not Contaminated
+42,2,49.6,9,No Lime Added,50,3.85,Not Contaminated

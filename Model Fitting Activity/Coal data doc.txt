@@ -1,0 +1,35 @@
+NAME: Coal Data
+SIZE: 29 observations, 11 variables
+ 
+DESCRIPTIVE ABSTRACT:
+Logistic Regression relating Coal pillar stability (Yes/No) to width/height ratio and 
+Strength/Stress ratio for pillars from 29 mine seams.
+
+Pillars in underground coal mines are mainly designed to
+ensure the protection of roadways and entries. Pillars stability is
+consequently the most important factor that must be guaranteed
+through the entire life of mine that can be years or even decades
+long.
+
+Source: R.K. Wattimena, S. Kramadibrata, I.D. Sidi, M.A. Azizi (2013). 
+"Developing Coal Pillar Stability Chart Using Logistic Regression,"
+International Journal of Rock Mechanics & Mining Sciences," Vol. 58,
+pp. 55-60.
+
+For this data set, a representative sample of over eight hundred, 2005 GM cars were selected, 
+then an algorithm was developed following the 2005 Central Edition of the Kelly Blue Book to 
+estimate retail price. </p>
+
+VARIABLE DESCRIPTIONS:
+Pillar - ID variable
+MineSeam - Name of the mine seam
+Depth - Depth of pillar in meters
+Height - Height of pillar in meters
+Width - Width of pillar in meters
+Ratio - Width / Height ratio 
+Roadway - Width of roadway in meters
+Compression - Uniaxial compression strength in MPa, where MPa is megapascals and 1 Mps = 145 pounds per square inch
+Strength - Strength in MPa
+Stress - Stress in MPa
+Ratio2 - Strength / Stress ratio
+Stability - Stability of mine seam where 1=Yes  0=No  

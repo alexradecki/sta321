@@ -1,0 +1,239 @@
+---
+title: "hw 2 starter.rmd"
+author: "Alex Radecki"
+date: "September 8, 2022"
+output: word_document
+---
+
+The code chunk below allows files to be knitted even if there are programming errors.
+
+```{r set_options, include=FALSE}
+knitr::opts_chunk$set(error = TRUE, fig.width = 6, fig.asp = 0.618)
+```
+
+
+The packages we need available for this program are: mosaic, dplyr, and possibly olsrr.  
+
+```{r}
+library(mosaic)
+library(dplyr)
+library(olsrr)
+```
+
+
+We begin by reading in the data set named maternal.  This is a .csv file.  The R dataframe is named Moms.
+
+```{r}
+# read in data file
+Moms <- read.csv("/SharedProjects/Gabrosek/STA 321/maternal.csv",header=TRUE)
+```
+
+1. There is a Data Documentation file saved to the SharedProjects folder.  Use it to answer the following questions.
+
+(a) The response variable is risk_maternal_death_2017.  For the United States the value of this variable is 33.  Interpret what this means.
+
+Answer: The lifetime risk for maternal death in 2017 for the United States is 33 deaths per 100,000 births
+
+(b) True/False: A larger number is worse for maternal survival for the variable risk_maternal_death_2017.
+
+Answer: True, a larger number represents more deaths per 100,000 deliveries
+
+(c) What are the units of measurement for life_expectancy_female?
+
+Answer: Years
+
+(d) What percentage of the deliveries for the United States were by C-section?
+
+Answer: 31%
+
+
+2.	Find numerical summaries of the response variable risk_maternal_death_2017.  See LM 1 – Basic Numerical Summaries on 321 R How-to.
+
+```{r}
+# numerical summaries of the variable risk_maternal_death_2017
+  favstats(~ risk_maternal_death_2017, data = Moms, na.rm = TRUE)
+```
+
+(a)	Interpret Q1.  Include units.
+
+Answer: 25% of countries had a maternal death rate in 2017 less than or equal to 91 deaths per 100,000 deliveries
+
+(b)	What is the interquartile range?  Include units.
+
+Answer: IQR = Q3 - Q1 = 1493 - 91 = 1402 deaths/100,000 deliveries
+
+(c) What do the mean and median suggest about the shape of the distribution?
+
+Answer: The median is significantly less than the mean, which suggests the distribution is right-skewed
+
+
+3.	Make a boxplot of the response variable risk_maternal_death_2017.   See LM 1 – Boxplot on 321 R How-to.
+
+```{r}
+# boxplot of the response variable Yard40
+  bwplot(~ risk_maternal_death_2017, data = Moms)
+```
+
+(a)	Describe the distribution of the response variable risk_maternal_death_2017. Mention shape and outliers.
+
+Answer: The box plot is positively skewed with 6 outliers
+
+(b) True/False: The outliers are pulling the mean above the median.
+
+Answer: True
+
+
+4. Because the response variable is highly skewed right we are going to take its logarithm.  Create a new variable named logy that is the logarithm of the variable risk_maternal_death_2017 and save to dataset Moms.  See Utilities – Creating a New Variable on 321 R How-to.  
+
+
+```{r}
+# Create logy variable
+  momsLog <- Moms %>% mutate(logy = log(risk_maternal_death_2017))
+```
+
+FROM THIS POINT ON USE logy AS YOUR RESPONSE VARIABLE.
+
+
+5.	Write out the model to predict logy that includes the five quantitative predictor variables: life_expectancy_female, adolescent_birth_rate, antenatal_care_4_1549, delivery_care_attendant_1549, and c_section.  Use the notation Y = risk_maternal_death_2017,  X1 = life_expectancy_female, X2 = adolescent_birth_rate, 
+X3 = antenatal_care_4_1549, X4 = delivery_care_attendant_1549, and X5 = c_section.  Use B for beta, and E for epsilon.
+
+Answer: Y = B1X1 + B2X2 + B3X3 + B4X4 + B5X5 + E
+
+
+6.	Fit the regression model from Question 5 and save the model output to an R Object named FullModel. See LM 2 – Fitting the MLR Model on 321 R How-to. Then, use summary function to get results.  Then, use the anova function to get an anova table.  
+
+```{r}
+# Fit the regression model
+  FullModel <- lm(logy ~ life_expectancy_female + adolescent_birth_rate + antenatal_care_4_1549 + delivery_care_attendant_1549 + c_section, data = momsLog)
+# Use summary() to get coefficients
+  summary(FullModel)
+# use anova to get ANOVA table
+  anova(FullModel)
+```
+
+(a)	Write out the regression equation.  Use X1, X2, ..., X5 in place of variable names.
+
+Answer: Yhat = -0.1396X1 + 0.00714X2 - 0.01141X3 - 0.0095X4 + 0.00175X5 + 16.8596
+
+(b)	Interpret the regression coefficient for life_expectancy_female.  Don't worry about units for logy.
+
+Answer: For every 1 year increase in life_expectancy_female, we expect logy to decrease by 0.1356
+
+(c)	Note that the regression coefficient for antenatal_care_4_1549 is negative.  Explain why this does not guarantee that in a SLR model with log(risk_maternal_death_2017) against antenatal_care_4_1549  that the slope will be positive (Typo? Negative?).
+
+Answer: Our regression coeffiecient for antenatal care being negative in our MLR model only means that it has a negative effect on logy in the presence of other predictors, it does not guarantee that the behavior will remain the same in a SLR model
+
+(d)	Predict the risk_maternal_death_2017 for the United States which has predictor variable values: life_expectancy_female = 81 years, adolescent_birth_rate = 19 births per 1000, antenatal_care_4_1549 = 97%,  delivery_care_attendant_1549 = 99%, and c_section = 31%.  Note: I want your answer in the units of Y, not logY!
+
+Answer:  40.23 deaths/100,000
+
+(e)	The actual risk_maternal_death_2017 for the U.S. was 33 deaths per 100,000.  Find the residual.
+
+Answer: 33 - 40.23 = -7.23
+
+(f)	Interpret the residual from part (e) in the context of the problem.
+
+Answer: The risk of maternal death (2017) is 7.23 deaths less than expected
+
+(g)	Interpret the value of R2.
+
+Answer: 82.51% of the variation in log(risk_maternal_death_2017) is explained by the MLR model
+
+(h) Show how the adjusted R2 value was calculated.  
+
+Answer: 1 - ((SSE/(n-p-1))/(SST/(n-1))) = 1 - ((67.507/(127-5-1))/(386.038/(127-1))) = 0.8179
+
+
+7.	Make a scatterplot of Y (actual risk_maternal_death_2017) on the vertical axis and Y-hat (predicted risk_maternal_death_2017) on the x axis. See LM 1 – Scatterplot on 321 R How-to.  First, you need to add the fitted values to the dataframe Moms.  Then, you need to create a variable that untransforms them.  I've done it for you!  
+
+```{r}
+# code to add fitted values to Moms dataframe
+Moms <- Moms %>% mutate(FittedValues = FullModel$fitted.values)
+
+# untansform fited values
+Moms <- Moms %>% mutate(Yhat = exp(FullModel$fitted.values))
+
+# scatterplot of Y (not logy) on the vertical axis and Y-hat on x axis
+  xyplot(risk_maternal_death_2017 ~ Yhat, data = Moms, pch=19)
+```
+
+8.	Consider the full model stated in Question 5 and fit in Question 6.
+
+(a)	Complete the Overall F-Test.  Your solution should include the null and alternative hypotheses (notation only is ok), the value of the test statistic with appropriate degrees of freedom, the p-value, decision, and your conclusion. Note: You can simply use the output generated in Question 6 to answer this. Also, recall the response is log(risk_maternal_death_2017).
+
+Answer: 
+Hypotheses: 
+H0: B1 = B2 = B3 = B4 = B5 = 0
+Ha: At least one of B1, B2, B3, B4, B5 != 0
+
+Test statistic and degrees of freedom: 
+Test statistic = 115.1
+df = 122
+
+P-Value: 
+< 2.2e-16
+
+Decision: 
+Because p-value < 0.01, we reject H0
+
+Conclusion: 
+At least one of the predictors in the model is a statistically signifcant predictor of log(risk_maternal_death_2017)
+
+
+(b) Complete the single variable T-Test on X5 = c_section.  Your solution should include the null and alternative hypotheses (notation only is ok), the value of the test statistic with appropriate degrees of freedom, the p-value, decision, and your conclusion. Note: You can simply use the output generated in Question 6 to answer this. Also, recall the response is log(risk_maternal_death_2017).
+
+Answer: 
+Hypotheses: 
+H0: B5 = 0 | Other Xs in model
+Ha: B5 != 0 | Other Xs in model
+
+Test statistic and degrees of freedom:
+t = 0.249
+df = 122
+
+P-Value: 
+0.80352
+
+Decision:
+Because p-value > 0.1, we fail to reject H0
+
+Conclusion: 
+After adjusting for other predictors in the model, c_section is not a statistically significant predictor of log(risk_maternal_death_2017)
+
+
+9.	Multiple Partial F-Test for X3 = antenatal_care_4_1549 and X4 = delivery_care_attendant_1549 in a model that has X1 = life_expectancy_female, X2 = adolescent_birth_rate, and X5 = c_section. Save the model output to an R Object named ReducedModel. See LM 2 – Fitting the MLR Model on 321 R How-to. Then, use the anova function to get an anova table. After you have calculated the value of the test statistic by hand, then write the code to get the correct p-value. 
+
+```{r}
+# Fit the reduced regression model
+  ReducedModel <- lm(logy ~ life_expectancy_female + adolescent_birth_rate + c_section, data = momsLog)
+
+# P-Value for Partial F-Test
+  anova(ReducedModel)
+```
+
+(a) Give values for the following: SSE(FM), SSE(RM), p, n, and k.  Recall that the anova output for the full model is in the code provided just above Question 7.
+
+Answer: SSE(FM) = 67.507, SSE(RM) = 75.324, p = 5, n = 127, k = 4
+
+(b)	Complete the Multiple Partial F-Test. Your solution should include the null and alternative hypotheses (notation only is ok), the value of the test statistic with appropriate degrees of freedom, the p-value, decision, and your conclusion. Note: You must calculate the test statistic by hand and then use this value to write the code for the p-value. Also, recall the response is log(risk_maternal_death_2017).
+
+
+Answer: 
+Hypotheses: 
+H0: B3 = B4 = 0 | X1, X2, X5 in model
+Ha: At least one of B3, B4 != 0 | X1, X2, X5 in model
+
+Test statistic and degrees of freedom: 
+F statistic = 7.006
+DF numerator = 2, DF denominator = 122
+
+P-Value:
+```{r}
+#Getting p-value
+1 - pf(7.006,2,122)
+```
+Decision: We reject the null
+
+Conclusion: At least one of the predictor variables X3, X4 adds useful information to the prediction of log(risk_maternal_death_2017) in the model that includes the other 3 predictors
+
+

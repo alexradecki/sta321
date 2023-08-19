@@ -1,0 +1,129 @@
+countries_and_areas,life_expectancy_female,adolescent_birth_rate,antenatal_care_4_1549,delivery_care_attendant_1549,c_section,risk_maternal_death_2017
+Afghanistan,66,77,18,51,3,3030
+Albania,80,17,78,100,31,26
+Algeria,78,10,67,97,16,370
+Angola,64,163,61,50,4,1449
+Argentina,80,65,90,100,29,91
+Armenia,78,24,96,100,18,50
+Azerbaijan,75,53,66,100,20,59
+Bangladesh,74,78,31,42,23,400
+Barbados,80,50,88,99,21,42
+Belarus,79,16,100,100,25,4
+Belize,78,64,93,97,34,91
+Benin,63,94,52,78,5,2041
+Bhutan,72,28,85,75,12,400
+Bolivia (Plurinational State of),74,71,86,85,33,455
+Bosnia and Herzegovina,80,11,84,100,14,12
+Brazil,79,59,91,99,56,106
+Burkina Faso,62,132,47,80,4,1754
+Burundi,63,58,49,85,4,3030
+Cabo Verde,76,80,72,92,11,149
+Cambodia,72,57,76,89,6,455
+Cameroon,60,119,59,65,2,2500
+Canada,84,8,99,100,26,16
+Central African Republic,55,229,38,40,5,4000
+Chad,55,179,31,20,1,6667
+China,79,9,81,100,41,48
+Colombia,80,75,90,99,46,159
+Comoros,66,70,49,82,10,1205
+Congo,66,111,79,94,5,1724
+Costa Rica,83,53,90,99,22,53
+Cote d'Ivoire,59,123,51,74,3,2941
+Croatia,81,10,98,100,24,11
+Cuba,81,52,98,99,40,56
+Democratic People's Republic of Korea,76,1,94,100,13,161
+Democratic Republic of the Congo,62,138,48,80,5,2941
+Djibouti,69,21,23,87,11,714
+Dominican Republic,77,90,93,98,58,244
+Ecuador,80,111,58,96,46,156
+Egypt,74,56,83,92,52,137
+El Salvador,78,69,90,98,32,104
+Equatorial Guinea,60,176,67,68,7,1493
+Eritrea,68,76,57,34,3,2174
+Eswatini,64,87,76,88,12,1389
+Ethiopia,68,80,32,28,2,1818
+Gabon,68,91,78,89,10,1075
+Gambia,63,86,78,57,2,3226
+Georgia,78,44,88,100,41,53
+Ghana,65,75,87,71,13,1220
+Guatemala,77,92,86,66,26,303
+Guinea,62,120,35,55,3,2857
+Guinea-Bissau,60,106,65,45,4,3125
+Guyana,73,74,87,86,17,455
+Haiti,66,55,67,42,5,1493
+Honduras,77,103,89,83,19,179
+India,71,11,51,81,17,345
+Indonesia,74,48,77,94,17,417
+Iran (Islamic Republic of),78,36,94,96,46,38
+Iraq,72,82,68,96,33,313
+Jamaica,76,46,86,99,21,167
+Jordan,76,27,92,100,26,137
+Kazakhstan,77,25,95,99,15,29
+Kenya,69,96,58,62,9,1316
+Kiribati,72,49,71,98,10,345
+Kyrgyzstan,75,34,95,98,7,208
+Lao People's Democratic Republic,69,83,62,64,6,556
+Lesotho,57,94,74,78,10,1724
+Liberia,65,150,78,61,4,3125
+Luxembourg,84,5,97,100,29,7
+Madagascar,68,152,51,44,2,1515
+Malawi,67,138,51,90,6,1667
+Maldives,80,10,82,100,40,119
+Mali,60,174,43,67,2,3448
+Mauritania,66,84,63,69,5,3571
+Mexico,78,71,94,98,41,77
+Mongolia,74,30,90,100,23,141
+Montenegro,79,10,87,99,20,10
+Morocco,78,32,54,87,21,179
+Mozambique,63,194,52,65,4,1493
+Myanmar,70,36,59,60,17,526
+Namibia,66,64,63,88,14,714
+Nepal,72,88,69,58,9,435
+Nicaragua,78,92,88,88,30,263
+Niger,63,146,38,40,1,3704
+Nigeria,55,120,57,43,3,4762
+North Macedonia,78,16,94,100,25,11
+Oman,80,14,94,99,19,63
+Pakistan,68,46,51,69,22,556
+Panama,82,79,88,94,28,133
+Paraguay,76,72,94,96,46,345
+Peru,79,44,96,92,32,208
+Philippines,75,47,87,84,13,333
+Qatar,82,10,85,100,20,20
+Republic of Moldova,76,24,95,100,16,26
+Romania,79,37,76,95,34,28
+Rwanda,71,41,44,91,13,1064
+Saint Lucia,77,43,90,99,19,172
+Samoa,75,39,73,83,5,169
+Sao Tome and Principe,73,92,84,93,6,588
+Senegal,70,78,57,68,5,1538
+Serbia,78,15,94,98,29,17
+Sierra Leone,55,101,78,82,3,5000
+Solomon Islands,75,78,69,86,6,500
+South Africa,67,71,76,97,26,303
+South Sudan,59,158,17,19,1,5556
+Sri Lanka,80,21,93,100,32,77
+State of Palestine,76,48,96,100,20,114
+Sudan,67,87,51,78,9,1333
+Suriname,75,60,67,90,19,303
+Syrian Arab Republic,78,54,64,96,26,100
+Tajikistan,73,54,64,95,5,71
+Thailand,81,43,91,99,33,53
+Timor-Leste,71,42,77,56,4,588
+Togo,62,89,57,45,7,1786
+Tonga,73,30,70,96,17,185
+Trinidad and Tobago,76,38,100,100,22,119
+Tunisia,79,7,85,74,27,103
+Turkey,80,23,89,97,48,36
+Turkmenistan,72,28,96,100,6,23
+Uganda,65,132,60,74,5,2041
+Ukraine,77,23,87,99,12,27
+United Republic of Tanzania,67,139,62,64,6,2778
+United States,81,19,97,99,31,33
+Uruguay,81,36,77,100,30,34
+Vanuatu,72,78,52,89,12,303
+Venezuela (Bolivarian Republic of),76,95,84,100,52,303
+Viet Nam,79,30,74,94,28,91
+Yemen,68,67,25,45,5,667
+Zambia,66,141,56,63,4,1075
+Zimbabwe,63,78,76,78,6,1818

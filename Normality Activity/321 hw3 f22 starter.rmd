@@ -1,0 +1,262 @@
+---
+title: "hw 3 starter.rmd"
+author: "Alex Radecki"
+date: "September 13, 2022"
+output: word_document
+---
+
+The code chunk below allows files to be knitted even if there are programming errors.
+
+```{r set_options, message=FALSE}
+knitr::opts_chunk$set(error = TRUE, fig.width = 6, fig.asp = 0.618)
+```
+
+
+The packages we need available for this program are: mosaic, dplyr, and possibly olsrr.  
+
+```{r, packages}
+library(mosaic)
+library(dplyr)
+library(olsrr)
+```
+
+
+We begin by reading in the data set named skeletal.  This is a .csv file.  The R dataframe is named REMAINS.
+
+```{r}
+# read in data file
+REMAINS <- read.csv("/SharedProjects/Gabrosek/STA 321/skeletal.csv",header=TRUE)
+```
+
+1. There is a Data Documentation file named skeletal data doc saved to the SharedProjects folder.  Use it to answer the following questions.
+
+(a) The response variable is Nitrogen.  For ID 29 the value of this variable is 3.55.  Interpret what this means.  Include units of measurement.
+
+Answer: Nitrogen level in g of nitrogen/100g of bone
+
+(b) Consider the age variable for ID 29 which is left blank.  True/False: Any model that includes age as a variable will not include this observation in finding the regression equation.
+
+Answer: False
+
+(c) What are the units of measurement for Depth?
+
+Answer: Depth coffin buried in feet
+
+
+******************************************************************
+From this point on you will need to code in R to produce output to answer the questions.
+******************************************************************
+
+2. Find basic numerical summaries of the response variable Nitrogen.  See LM 1 – Basic Numerical Summaries on 321 R How-to. 
+
+```{r}
+#  numerical summaries of the response variable Nitrogen
+favstats(~Nitrogen, data=REMAINS, na.rm=TRUE)
+```
+
+(a)	Interpret the mean.  Include units of measurement.
+
+Answer: The average nitrogen level was 3.788 g/100g of bone
+
+(b) What does the comparison of the mean to the median suggest, but not prove, about the shape of the distribution?
+
+Answer: Since the mean is less than the median, this suggests that the distribution is left skewed
+
+
+3. Make a histogram of the response variable Nitrogen using start = 3.2, end = 4.1, jump = 0.1.  See LM 1 – Histogram on 321 R How-to.   
+
+```{r}
+# histogram of the response variable Nitrogen
+histogram(~Nitrogen, data=REMAINS, type="count")
+```
+
+(a)	Describe the distribution of the variable Nitrogen.  Mention peaks, shape, and outliers.
+
+Answer: The shape is unimodal, with a peak around 3.8g/100g, with no noticeable outliers
+
+
+(b) True/False: The histogram suggests that we do not need to transform the response variable.
+
+Answer: False
+
+
+***********************************************************************
+Because Nitrogen is skewed left we could transform the variable.  But, we aren't going to do that.
+***********************************************************************
+
+
+4. Make separate frequency tables of the variables Lime and Oil.  See LM 4 – Frequency Table on 321 R How-to. 
+
+```{r}
+# frequency table of Lime
+tally(~Lime, data=REMAINS)
+
+# frequency table of Oil
+tally(~Oil, data=REMAINS)
+```
+
+(a) What percentage of the remains had Lime Added?
+
+Answer: 68%
+
+(b) How many (number, not percent) of the remains are oil contaminated?
+
+Answer: 3
+
+
+5. Write the code to make dummy variables as follows and add them to the R dataframe named REMAINS: S where 1 = Site 1, 0 = Site 2 and L where 1 = Lime Added and 0 = No Lime Added.   See LM 3 – Create Dummy Variables on 321 R How-to. 
+
+```{r}
+# create dummy variable S
+REMAINS <- REMAINS %>% mutate(S = ifelse(Site == "1", 1, 0))
+# create dummy variable L
+REMAINS <- REMAINS %>% mutate(L = ifelse(Lime == "Lime Added", 1, 0))
+```
+
+****************************************************************
+The next set of questions are for Model1 with response Y = Nitrogen that includes the predictors S, X2 = Deposition, X3 = Depth, L, and X5 = Age.  
+****************************************************************
+
+6. Write out Model1.  Use notation Y, S, X2, …
+
+Answer: Y = B0 + B1S + B2X2 + B3X3 + B4L + B5X5 + e
+
+
+7. Write the code to fit Model1.  (Remember you have to use the variable names, not Y, X2, X3, and X5.)  Save results of the lm( ) function to an R object named Model1. Then, use the summary( ) function to get regression coefficients, and the anova( ) function to get the anova table. See LM 2 – Fitting the MLR Model on 321 R How-to.   
+
+```{r}
+# Fit the regression model
+Model1 <- lm(Nitrogen ~ S + Deposition + Depth + L + Age, data=REMAINS)
+
+# Use summary() to get coefficients
+summary(Model1)
+
+# use anova to get ANOVA table
+anova(Model1)
+```
+
+(a) How many observations were used to fit the model?  Explain why not all 42 observations were used.
+
+Answer: Some observations were not included due to missing values
+
+(b)	Write out the regression equation.
+
+Answer: Yhat = 4.08 + 0.053S - 0.008X2 + 0.022X3 + 0.136L - 0.003X5
+
+(c)	Interpret the regression coefficient for Deposition.
+
+Answer: For every year buried, nitrogen decreases by 0.008 g/100g, accounting for other predictors in model
+
+(d)	Interpret the regression coefficient for L - the dummy variable for Lime Added.
+
+Answer: If lime was added, on average the nitrogen level increased by 0.136 g/100g, accounting for other predictors in model
+
+
+8.	Find the correlation matrix between Nitrogen and each of the quantitative  variables included in Model1. See LM 3 – Correlation Matrix on 321 R How-to.  In the cor( ) function include the code use = "pairwise.complete.obs" 
+
+```{r}
+# correlation matrix
+cor(REMAINS [,c(3, 4, 6, 7, 9, 10)], use = "pairwise.complete.obs")
+```
+
+(a)	Which variable has the strongest correlation with Nitrogen, and what is the value of the correlation?
+
+Answer: Deposition: -0.568
+
+(b) Are any of the quantitative predictor variables so highly correlated with each other that we want to drop one from the model?  If so, name the variables and give the correlation.
+
+Answer: Deposition and Lime have a strong correlation (0.869), so we might want to look into that relationship
+
+
+9. Make a plot of the externally studentized residuals vs y-hat.  See LM 3 – Externally Studentized Residuals -Y-Hat Plot on 321 R How-to.  
+
+```{r}
+# externally studentized residuals vs. Y-Hat Plot
+ols_plot_resid_stud_fit(Model1, print_plot=TRUE)
+```
+
+(a) The residual plot can be used to check Assumption 3 Errors – Mean Zero.  Does this plot suggest that the assumption is met?  Answer Yes/No and give a brief explanation as to why.
+
+Answer: Yes, the residuals appear to be centered around 0
+
+(b)	The residual plot can be used to check Assumption 4 Errors – Constant Variance.  Does this plot suggest that the assumption is met?  Answer Yes/No and give a brief explanation as to why.
+
+Answer: Yes, the spread appears to be consistent as predicted value increases
+
+(c) The points in red have externally studentized residuals beyond -2 or 2.  Are any of these points cause for alarm?
+
+Answer: Not necessarily, however they may be worth at least looking into, especially since there are only 2 (This becomes less feasbile as the number of observations increases)
+
+
+10. Make a normal probability plot of the residuals. See LM 3 – Normal Probability Plot of Residuals on 321 R How-to.   
+```{r}
+# normal probability plot of the residuals
+ols_plot_resid_qq(Model1, print_plot=TRUE)
+```
+
+(a) The normal probability plot can be used to check Assumption 2 Errors –  Normality.   Write a sentence that tells me what the plot tells you about the residuals.  
+
+Answer: The points do stray a little from the line in the QQ plot, and the residuals may be a little heavy tailed
+
+
+11. Assumption 7 Predictors – No Measurement Error.  We don’t have a diagnostic to check this, but write a sentence that explains what this assumption means for this example.
+
+Answer: This assumption assumes that all predictr variables were measured without error
+
+
+12. Make a plot of Cooks D. See LM 3 – Cooks D on 321 R How-to.  
+
+```{r}
+# cooks distance 
+ols_plot_cooksd_chart(Model1, print_plot=TRUE)
+```
+
+(a) What is the observation number of the observation with the largest Cooks D?   Normally we would look up this observation to check what is odd about it.  But, with missing values the observation number does not match the row in the REMAINS dataframe.  So, we skip that step.
+
+Answer: Observation number 2
+
+
+13. Write the code to create the interaction variable S*Deposition. Name the variable SX2 and save it to the REMAINS dataframe.
+
+```{r}
+# interaction variable
+REMAINS <- REMAINS %>% mutate(SX2 = S*Deposition)
+```
+
+
+14.	Write the code to fit the model Y = B0 +  B1S + B2X2 + B6SX2 + E.  Save results of the lm( ) function to an R object named Model2. Then, use the summary( ) function to get regression coefficients, and the anova( ) function to get the anova table. See LM 2 – Fitting the MLR Model on 321 R How-to.   
+
+```{r}
+# Fit the regression model
+Model2 <- lm(Nitrogen ~ S + Deposition + SX2, data=REMAINS)
+
+# Use summary() to get coefficients
+summary(Model2)
+
+# use anova to get ANOVA table
+anova(Model2)
+```
+
+(a)	Write out the regression equation.
+
+Answer: Yhat = 4.205 - 0.3495S - 0.008X2 + 0.0074SX2
+
+(b)	 Notice that S (Site dummy) had a positive regression coefficient in Model1 and has a negative regression coefficient in Model2.  We know that regression coefficients change when you change the model. What in particular may be happening in this model?  
+
+Answer: Suggests a relationship between the predictors
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
